@@ -61,7 +61,7 @@ export default {
   methods: {
     dragOver(e) {
       e.preventDefault();
-      console.log(import.meta.env.TEST);
+      console.log(import.meta.env.VITE_TEST);
     },
     dragLeave(e) {
       e.preventDefault();
@@ -90,7 +90,7 @@ export default {
         this.isProcessing = true; // Set isProcessing to true when submitting
         const formData = new FormData();
         formData.append('input_image', this.imageFile);
-        const authToken = import.meta.env.AUTH_TOKEN;
+        const authToken = import.meta.env.VITE_AUTH_TOKEN;
         fetch('https://cartoonornot-muf7kziviq-as.a.run.app/predict', {
           method: 'POST',
           body: formData,
