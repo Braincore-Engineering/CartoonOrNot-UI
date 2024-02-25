@@ -90,9 +90,14 @@ export default {
         this.isProcessing = true; // Set isProcessing to true when submitting
         const formData = new FormData();
         formData.append('input_image', this.imageFile);
+        const authToken = process.env.VUE_APP_AUTH_TOKEN;
         fetch('http://127.0.0.1:5000/predict', {
           method: 'POST',
-          body: formData
+          body: formData,
+          headers: {
+            'Authorization': `Bearer ${authToken}`, // Replace 'your_token_here' with your actual token
+          },
+
         })
           .then(response => response.json())
           .then(data => {
