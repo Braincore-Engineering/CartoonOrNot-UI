@@ -91,7 +91,7 @@ export default {
         const formData = new FormData();
         formData.append('input_image', this.imageFile);
         const authToken = process.env.VUE_APP_AUTH_TOKEN;
-        fetch('http://127.0.0.1:5000/predict', {
+        fetch('https://cartoonornot-muf7kziviq-as.a.run.app/predict', {
           method: 'POST',
           body: formData,
           headers: {
