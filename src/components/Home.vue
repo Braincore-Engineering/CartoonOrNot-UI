@@ -1,51 +1,40 @@
 <template>
-  <div>
+  <div class="max-w-xl mx-auto py-8 px-4">
     <h1 class="text-xl font-bold mb-4">Cartoon Or Not Classifier</h1>
 
-    <div v-if="imageUrl" class="items-center">
-      <img :src="imageUrl" alt="Selected Image" class="w-1/2 mx-auto p-4 rounded-lg" />
+    <div v-if="imageUrl" class="text-center">
+      <img :src="imageUrl" alt="Selected Image" class="mx-auto w-1/2 max-w-lg rounded-lg mb-4" />
     </div>
 
-    <div class="col-span-full">
+    <div class="text-center">
       <div @dragover.prevent="dragOver" @dragleave.prevent="dragLeave" @drop.prevent="handleDrop"
-        class="mt-2 flex justify-center rounded-lg border border-dashed border-white/25 py-10 max-w-xl mx-auto">
-        <div class="text-center">
-          <div class="mx-auto w-12 text-white" aria-hidden="true"></div>
-          <div class="text-sm leading-6 text-white">
-            <label for="file-upload"
-              class="relative cursor-pointer rounded-md font-semibold text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500">
-              <span>Upload a file</span>
-              <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageChange"
-                accept="image/*" required style="min-width: 400px;" />
-            </label>
-            <p class="pl-1">or drag and drop</p>
-          </div>
-          <p class="text-xs leading-5 text-white">PNG, JPG, GIF up to 10MB</p>
-          <br>
-          <p v-if="selectedFileName" class="text-xs leading-5 text-white">{{ selectedFileName }}</p>
-        </div>
+        class="border-dashed rounded-lg border border-white/25 py-10 max-w-lg mx-auto mb-4">
+        <label for="file-upload"
+          class="cursor-pointer font-semibold text-blue-400 focus-within:outline-none focus-within:ring-2 focus-within:ring-blue-600 focus-within:ring-offset-2 hover:text-blue-500">
+          <span>Upload a file</span>
+          <input id="file-upload" name="file-upload" type="file" class="sr-only" @change="handleImageChange"
+            accept="image/*" required />
+        </label>
+        <p class="text-xs leading-5 text-white mt-1">or drag and drop</p>
+        <p v-if="selectedFileName" class="text-xs leading-5 text-white mt-1">{{ selectedFileName }}</p>
       </div>
     </div>
 
-    <div v-if="isProcessing" class="py-4">
+    <div v-if="isProcessing" class="text-center mb-4">
       <p>Loading...</p>
-      <!-- You can replace this with any loading indicator or spinner -->
     </div>
 
-    <div v-else-if="predictionData" class="py-4">
+    <div v-else-if="predictionData" class="text-center mb-4">
       <p>Prediction: {{ predictionData.prediction }}</p>
       <p>Accuracy: {{ predictionData.accuracy }}</p>
     </div>
 
     <button @click="submitImage"
-      class="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
+      class="block mx-auto px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:bg-blue-600">
       {{ isProcessing ? 'Processing...' : 'Submit' }}
     </button>
   </div>
 </template>
-
-
-
 
 <script>
 export default {
@@ -55,13 +44,12 @@ export default {
       predictionData: null,
       isProcessing: false,
       imageFile: null,
-      selectedFileName: '', // To store the selected file name
+      selectedFileName: '',
     };
   },
   methods: {
     dragOver(e) {
       e.preventDefault();
-      console.log(import.meta.env.VITE_TEST);
     },
     dragLeave(e) {
       e.preventDefault();
@@ -79,15 +67,15 @@ export default {
     processFile(file) {
       if (file && file.type.startsWith('image/')) {
         this.imageUrl = URL.createObjectURL(file);
-        this.imageFile = file; // Store the file in your data model
+        this.imageFile = file;
       } else {
         this.imageUrl = null;
-        this.imageFile = null; // Clear the stored file if not an image
+        this.imageFile = null;
       }
     },
     submitImage() {
       if (this.imageFile) {
-        this.isProcessing = true; // Set isProcessing to true when submitting
+        this.isProcessing = true;
         const formData = new FormData();
         formData.append('input_image', this.imageFile);
         const authToken = import.meta.env.VITE_AUTH_TOKEN;
@@ -95,32 +83,24 @@ export default {
           method: 'POST',
           body: formData,
           headers: {
-            'Authorization': `Bearer ${authToken}`, // Replace 'your_token_here' with your actual token
+            'Authorization': `Bearer ${authToken}`,
           },
 
         })
           .then(response => response.json())
           .then(data => {
-            console.log(data);
-            this.predictionData = data.data; // Update predictionData with response data
+            this.predictionData = data.data;
           })
           .catch(error => {
             console.error('Error:', error);
-            // Handle error here
           })
           .finally(() => {
-            this.isProcessing = false; // Reset isProcessing to false after processing
+            this.isProcessing = false;
           });
       } else {
         console.error('No image selected');
-        // Handle no image selected error here
       }
     }
   }
 };
 </script>
-  
-<style>
-/* You can add custom styles specific to this component here */
-</style>
-  
